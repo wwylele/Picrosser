@@ -43,6 +43,8 @@ namespace Picrosser {
             int[] numbers;
             for(int x = 0; x < question.Width; ++x) {
                 numbers = question.GetColNumbers(x);
+                if(numbers.Length == 0)
+                    numbers = new int[] { 0 };
                 for(int i = 0; i < numbers.Length; ++i) {
                     TextBlock label = new TextBlock();
                     label.Text = numbers[i].ToString();
@@ -57,6 +59,8 @@ namespace Picrosser {
             }
             for(int y = 0; y < question.Height; ++y) {
                 numbers = question.GetRowNumbers(y);
+                if(numbers.Length == 0)
+                    numbers = new int[] { 0 };
                 for(int i = 0; i < numbers.Length; ++i) {
                     TextBlock label = new TextBlock();
                     label.Text = numbers[i].ToString();
@@ -121,10 +125,10 @@ namespace Picrosser {
                 }
                 picrossCanvas.Children.Add(contRect);
                 MessageBox.Show("Find a contradiction when solving!\n"
-                    +"No possible solution.");
-            }else if(solver.Result == Solver.ResultEnum.INDEFINITE) {
+                    + "No possible solution.");
+            } else if(solver.Result == Solver.ResultEnum.INDEFINITE) {
                 MessageBox.Show("Cannot determine the rest pixels.\n"
-                    +"Maybe there are more than one solutions.");
+                    + "Maybe there are more than one solutions.");
             }
             buttonSolve.IsEnabled = true;
             buttonSubmit.IsEnabled = true;
