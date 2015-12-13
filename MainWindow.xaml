@@ -1,0 +1,18 @@
+﻿<Window x:Class="Picrosser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Picrosser"
+        mc:Ignorable="d"
+        Title="Picrosser" Height="350" Width="525">
+    <Grid>
+        <Grid Margin="10,10,0,10" HorizontalAlignment="Left" Width="250">
+            <TextBox x:Name="textPicross" TextWrapping="Wrap" Margin="0,0,0,73" Grid.ColumnSpan="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+            <Button x:Name="buttonSubmit" Content="Submit Picross" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="131" Height="68" Click="buttonSubmit_Click"/>
+            <Button x:Name="buttonSolve" Content="Solve This" HorizontalAlignment="Right" Width="119" Height="68" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Click="buttonSolve_Click"/>
+        </Grid>
+        <Canvas x:Name="picrossCanvas" Margin="265,10,0,10"/>
+
+    </Grid>
+</Window>
