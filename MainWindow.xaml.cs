@@ -120,6 +120,11 @@ namespace Picrosser {
                     contRect.Width = picrossPixelSize * (picrossLeftSpaces + question.Width);
                 }
                 picrossCanvas.Children.Add(contRect);
+                MessageBox.Show("Find a contradiction when solving!\n"
+                    +"No possible solution.");
+            }else if(solver.Result == Solver.ResultEnum.INDEFINITE) {
+                MessageBox.Show("Cannot determine the rest pixels.\n"
+                    +"Maybe there are more than one solutions.");
             }
             buttonSolve.IsEnabled = true;
             buttonSubmit.IsEnabled = true;
