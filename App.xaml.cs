@@ -9,7 +9,7 @@ using System.Windows;
 namespace Picrosser
 {
     /// <summary>
-    /// App.xaml 的交互逻辑
+    /// App.xaml
     /// </summary>
     public partial class App : Application
     {

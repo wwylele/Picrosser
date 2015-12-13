@@ -149,6 +149,9 @@ namespace Picrosser {
             }
         }
 
+        /// <summary>
+        /// <c>MainWindow</c> constructor.
+        /// </summary>
         public MainWindow() {
             InitializeComponent();
 

@@ -4,18 +4,52 @@ using System.Collections;
 using System.Linq;
 
 namespace Picrosser {
+
+    /// <summary>
+    /// Picross puzzle solver class.
+    /// </summary>
     public class Solver {
+
+        /// <summary>
+        /// A class that decribes one step in a solution.
+        /// </summary>
         public class Touch {
+
+            /// <summary>
+            /// Specifing the pixel position that is being operated.
+            /// </summary>
             public int colIndex, rowIndex;
+
+            /// <summary>
+            /// <c>true</c> means to turn on the pixel. 
+            /// <c>false</c> means to turn off the pixel.
+            /// </summary>
             public bool on;
         }
+
+        /// <summary>
+        /// An enum type describing the state of a pixel.
+        /// </summary>
         public enum PixelStateEnum {
+
+            /// <summary>The pixel has not been operated.</summary>
             UNKNOWN,
+
+            /// <summary>The pixel has been turned on. </summary>
             ON,
+
+            /// <summary>The pixel has been turned off. </summary>
             OFF
         }
 
         PixelStateEnum[,] pixelStates;
+
+        /// <summary>
+        /// Get the state of a specified pixel.
+        /// </summary>
+        /// <param name="colIndex">Column index of the pixel.</param>
+        /// <param name="rowIndex">Row index of the pixel.</param>
+        /// <returns>The state of the pixel.</returns>
         public PixelStateEnum GetPixelState(int colIndex, int rowIndex) {
             return pixelStates[colIndex, rowIndex];
         }
@@ -35,21 +69,48 @@ namespace Picrosser {
             return result;
         }
 
+        /// <summary>
+        /// An enum that descibes the solving state of the <c>Solver</c>
+        /// </summary>
         public enum ResultEnum {
+
+            /// <summary>The method <c>Solve</c> has not been called 
+            /// or has not finished.</summary>
             SOLVING,
+
+            /// <summary>Found a contradiction when solving.</summary>
             CONTRADICTORY,
+
+            /// <summary>Cannot determinate some pixels.</summary>
             INDEFINITE,
+
+            /// <summary>Found a unique solution for the puzzle.</summary>
             FINISHED
         }
+
+        /// <summary>
+        /// The solving state of the <c>Solver</c>
+        /// </summary>
         public ResultEnum Result {
             get; private set;
         }
+
+        /// <summary>
+        /// Valid only if <c>Result==ResultEnum.CONTRADICTORY</c>. 
+        /// Indicating whether the contradiction was found in a column or not.
+        /// </summary>
         public bool ContradictoryInCols {
             get; private set;
         }
+
+        /// <summary>
+        /// Valid only if <c>Result==ResultEnum.CONTRADICTORY</c>. 
+        /// Indicating the index of the column/row that contains contradiction.
+        /// </summary>
         public int ContradictoryIndex {
             get; private set;
         }
+
         static IEnumerable<int[]/*Spaces before each number*/> EnumNumberSpaces(int[] numbers, int length) {
             int[] spaces = new int[numbers.Length];
             length -= numbers.Sum();
@@ -107,8 +168,37 @@ namespace Picrosser {
             }
             return newCandidates;
         }
-
+        /// <summary>
+        /// Solve a picross puzzle.
+        /// </summary>
+        /// <param name="question">The picross puzzle to be solved.</param>
+        /// <returns>An IEnumerable of solution steps.</returns>
+        /// <example>
+        /// This example shows a common way to use <c>Solve</c>:
+        /// <code>
+        /// Question question=new Question();
+        /// Solver solver=new Solver();
+        /// foreach(var step in solver.Solve(question)){
+        ///     if(step.on)
+        ///         //turn on the pixel at (step.colIndex,step.rowIndex)
+        ///     else
+        ///         //turn pff the pixel at (step.colIndex,step.rowIndex)
+        /// }
+        /// switch(solver.Result){
+        /// case Solver.ResultEnum.CONTRADICTORY:
+        ///     //Find a contradiction
+        ///     break;
+        /// case Solver.ResultEnum.INDEFINITE:
+        ///     //Multiple solutions
+        ///     break;
+        /// case Solver.ResultEnum.FINISHED:
+        ///     //Unique solution
+        ///     break;
+        /// }
+        /// </code>
+        /// </example>
         public IEnumerable<Touch> Solve(Question question) {
+            Result = ResultEnum.SOLVING;
             pixelStates = new PixelStateEnum[question.Width, question.Height];
             IEnumerable<BitArray>[][] candidates = new IEnumerable<BitArray>[2][]{
                 new IEnumerable<BitArray>[question.Width],
