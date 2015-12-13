@@ -29,7 +29,7 @@ namespace Picrosser {
         /// Get the number sequence of a column.
         /// </summary>
         /// <param name="index">Column index</param>
-        /// <returns></returns>
+        /// <returns>The number sequence.</returns>
         public int[] GetColNumbers(int index) {
             return colNumbers[index];
         }
@@ -38,7 +38,7 @@ namespace Picrosser {
         /// Get the number sequence of a row.
         /// </summary>
         /// <param name="index">Row index</param>
-        /// <returns></returns>
+        /// <returns>The number sequence.</returns>
         public int[] GetRowNumbers(int index) {
             return rowNumbers[index];
         }
