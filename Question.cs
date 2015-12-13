@@ -42,9 +42,14 @@ namespace Picrosser {
             this("0\n\n0\n") { }
 
         int[] StringToNumbers(string line) {
-            string[] split = line.Split(new char[] { ' ', ',' });
+            string[] split = line.Trim().Split(new char[] { ' ', ',' });
             if(split.Length == 0) throw new ArgumentException();
-            int[] numbers = split.Select(Int32.Parse).ToArray();
+            int[] numbers;
+            try {
+                numbers = split.Where(x=>!x.Equals("")).Select(Int32.Parse).ToArray();
+            } catch(FormatException) {
+                throw new ArgumentException();
+            }
             if(numbers.Length == 1 && numbers[0] == 0) return new int[0];
             if(numbers.Any((x) => x < 1)) throw new ArgumentException();
             return numbers;
@@ -62,14 +67,14 @@ namespace Picrosser {
             }
             while(true) {
                 line = reader.ReadLine();
-                if(line == null) break;
+                if(line == null || line.Equals("")) break;
                 row.AddLast(StringToNumbers(line));
             }
             if(!col.Any() || !row.Any()) throw new ArgumentException();
             colNumbers = col.ToArray();
             rowNumbers = row.ToArray();
             Width = colNumbers.Length;
-            Height = colNumbers.Length;
+            Height = rowNumbers.Length;
         }
 
 
