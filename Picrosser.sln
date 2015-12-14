@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Picrosser", "Picrosser.csproj", "{CAF913E8-DBFF-4603-88B0-347DDFAD4068}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Picrosser", "gui\Picrosser.csproj", "{CAF913E8-DBFF-4603-88B0-347DDFAD4068}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicrosserConsole", "PicrosserConsole\PicrosserConsole.csproj", "{02488C1D-D0C3-42CE-B8C7-D929CC349BAA}"
 EndProject

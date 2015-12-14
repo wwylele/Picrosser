@@ -50,7 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Picrosser.csproj">
+    <ProjectReference Include="..\gui\Picrosser.csproj">
       <Project>{caf913e8-dbff-4603-88b0-347ddfad4068}</Project>
       <Name>Picrosser</Name>
     </ProjectReference>
