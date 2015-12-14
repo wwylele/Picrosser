@@ -60,13 +60,17 @@ namespace Picrosser {
         /// <c>Result==Solver.Result.Enum.FINISHED</c>.
         /// </summary>
         /// <returns>The solution</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Throw if <c>Result!=Solver.Result.Enum.FINISHED</c>.
+        /// </exception>
         public bool[,] GetSolution() {
             if(Result != ResultEnum.FINISHED)
                 throw new InvalidOperationException();
             int w = pixelStates.GetLength(0);
             int h = pixelStates.GetLength(1);
             bool[,] sol = new bool[w, h];
-            for(int y=0;y< h;++y)for(int x=0;x< w; ++x) {
+            for(int y = 0; y < h; ++y)
+                for(int x = 0; x < w; ++x) {
                     sol[x, y] = pixelStates[x, y] == PixelStateEnum.ON;
                 }
             return sol;

@@ -145,7 +145,10 @@ namespace Picrosser {
         /// <summary>
         /// Construct a puzzle using a know solution (a pixel map).
         /// </summary>
-        /// <param name="pixels">A pixel map bool[Width,Height]</param>
+        /// <param name="pixels">A pixel map <c>bool[Width,Height]</c>.</param>
+        /// <exception cref="ArgumentException">
+        /// Throw if <c>pixels</c> has a length of zero in any dimension.
+        /// </exception>
         public Question(bool[,] pixels) {
             Width = pixels.GetLength(0);
             Height = pixels.GetLength(1);
