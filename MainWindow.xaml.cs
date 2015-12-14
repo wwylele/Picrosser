@@ -8,8 +8,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Threading;
-
-namespace Picrosser {
+using Picrosser;
+namespace PicrosserUI {
     /// <summary>
     /// MainWindow.xaml
     /// </summary>
