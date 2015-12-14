@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Picrosser;
 namespace PicrosserConsole {
-    class PicrossConsole {
+    class PicrosserConsole {
         static void Main(string[] args) {
             string text = "", line;
             int sec = 0;
