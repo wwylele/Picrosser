@@ -54,6 +54,24 @@ namespace Picrosser {
             return pixelStates[colIndex, rowIndex];
         }
 
+        /// <summary>
+        /// Get the solution of the puzzle. 
+        /// Can be called only after calling <c>Solve</c> and 
+        /// <c>Result==Solver.Result.Enum.FINISHED</c>.
+        /// </summary>
+        /// <returns>The solution</returns>
+        public bool[,] GetSolution() {
+            if(Result != ResultEnum.FINISHED)
+                throw new InvalidOperationException();
+            int w = pixelStates.GetLength(0);
+            int h = pixelStates.GetLength(1);
+            bool[,] sol = new bool[w, h];
+            for(int y=0;y< h;++y)for(int x=0;x< w; ++x) {
+                    sol[x, y] = pixelStates[x, y] == PixelStateEnum.ON;
+                }
+            return sol;
+        }
+
         BitArray GetColSlice(int colIndex, bool on) {
             BitArray result = new BitArray(pixelStates.GetLength(1));
             for(int i = 0; i < pixelStates.GetLength(1); ++i) {
