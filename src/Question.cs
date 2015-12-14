@@ -169,9 +169,9 @@ namespace Picrosser {
                             currentNumber = 0;
                         }
                     }
-                    if(currentNumber != 0) {
-                        numbers.AddLast(currentNumber);
-                    }
+                }
+                if(currentNumber != 0) {
+                    numbers.AddLast(currentNumber);
                 }
                 colNumbers[i] = numbers.ToArray();
             }
@@ -187,9 +187,9 @@ namespace Picrosser {
                             currentNumber = 0;
                         }
                     }
-                    if(currentNumber != 0) {
-                        numbers.AddLast(currentNumber);
-                    }
+                }
+                if(currentNumber != 0) {
+                    numbers.AddLast(currentNumber);
                 }
                 rowNumbers[i] = numbers.ToArray();
             }
