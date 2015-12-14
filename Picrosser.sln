@@ -7,7 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Picrosser", "gui\Picrosser.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicrosserConsole", "console\PicrosserConsole.csproj", "{02488C1D-D0C3-42CE-B8C7-D929CC349BAA}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "common", "src\common.shproj", "{29DDCA5F-520F-45B5-A7C2-BDC457EF7B36}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\common.projitems*{29ddca5f-520f-45b5-a7c2-bdc457ef7b36}*SharedItemsImports = 13
+		src\common.projitems*{02488c1d-d0c3-42ce-b8c7-d929cc349baa}*SharedItemsImports = 4
+		src\common.projitems*{caf913e8-dbff-4603-88b0-347ddfad4068}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
