@@ -96,7 +96,7 @@ namespace Picrosser {
             if(split.Length == 0) throw new ArgumentException();
             int[] numbers;
             try {
-                numbers = split.Where(x=>!x.Equals("")).Select(Int32.Parse).ToArray();
+                numbers = split.Where(x => !x.Equals("")).Select(Int32.Parse).ToArray();
             } catch(FormatException) {
                 throw new ArgumentException();
             }
@@ -140,6 +140,56 @@ namespace Picrosser {
             rowNumbers = row.ToArray();
             Width = colNumbers.Length;
             Height = rowNumbers.Length;
+        }
+
+        /// <summary>
+        /// Construct a puzzle using a know solution (a pixel map).
+        /// </summary>
+        /// <param name="pixels">A pixel map bool[Width,Height]</param>
+        public Question(bool[,] pixels) {
+            Width = pixels.GetLength(0);
+            Height = pixels.GetLength(1);
+            if(Width < 1 || Height < 1) {
+                throw new ArgumentException();
+            }
+            colNumbers = new int[Width][];
+            rowNumbers = new int[Height][];
+            for(int i = 0; i < Width; ++i) {
+                LinkedList<int> numbers = new LinkedList<int>();
+                int currentNumber = 0;
+                for(int j = 0; j < Height; ++j) {
+                    if(pixels[i, j]) {
+                        ++currentNumber;
+                    } else {
+                        if(currentNumber != 0) {
+                            numbers.AddLast(currentNumber);
+                            currentNumber = 0;
+                        }
+                    }
+                    if(currentNumber != 0) {
+                        numbers.AddLast(currentNumber);
+                    }
+                }
+                colNumbers[i] = numbers.ToArray();
+            }
+            for(int i = 0; i < Height; ++i) {
+                LinkedList<int> numbers = new LinkedList<int>();
+                int currentNumber = 0;
+                for(int j = 0; j < Width; ++j) {
+                    if(pixels[j, i]) {
+                        ++currentNumber;
+                    } else {
+                        if(currentNumber != 0) {
+                            numbers.AddLast(currentNumber);
+                            currentNumber = 0;
+                        }
+                    }
+                    if(currentNumber != 0) {
+                        numbers.AddLast(currentNumber);
+                    }
+                }
+                rowNumbers[i] = numbers.ToArray();
+            }
         }
 
 
