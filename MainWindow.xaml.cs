@@ -88,7 +88,7 @@ namespace PicrosserUI {
                 }
         }
 
-        BackgroundWorker solvingWorker = new BackgroundWorker();
+        BackgroundWorker solvingWorker;
 
         private void buttonSolve_Click(object sender, RoutedEventArgs e) {
             buttonSolve.IsEnabled = false;
@@ -156,6 +156,8 @@ namespace PicrosserUI {
             InitializeComponent();
 
             InitQuestionPresent();
+
+            solvingWorker = new BackgroundWorker();
             solvingWorker.WorkerReportsProgress = true;
             solvingWorker.DoWork += solvingWorker_DoWork;
             solvingWorker.ProgressChanged += solvingWorker_ProgressChanged;
