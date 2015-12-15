@@ -12,7 +12,9 @@
             <Button x:Name="buttonSubmit" Content="Submit Picross" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="131" Height="68" Click="buttonSubmit_Click"/>
             <Button x:Name="buttonSolve" Content="Solve This" HorizontalAlignment="Right" Width="119" Height="68" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Click="buttonSolve_Click"/>
         </Grid>
-        <Canvas x:Name="picrossCanvas" Margin="265,10,0,10"/>
+        <Canvas x:Name="picrossCanvas" Margin="265,10,0,48"/>
+        <Slider x:Name="sliderSpeed" Margin="321,0,0,10" Height="33" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="98" RenderTransformOrigin="0,0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" ValueChanged="sliderSpeed_ValueChanged"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="265,0,0,10" TextWrapping="Wrap" Text="Speed" Width="51" BorderThickness="0" Height="33" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>

@@ -144,16 +144,24 @@ namespace PicrosserUI {
             solver = new Solver();
             BackgroundWorker bw = (BackgroundWorker)sender;
             foreach(Solver.Touch touch in solver.SolveByStep(question)) {
-                Thread.Sleep(10);
+                int sleepTimeT = sleepTime;
+                if(sleepTimeT != 0)
+                    Thread.Sleep(sleepTimeT);
                 bw.ReportProgress(0, touch);
             }
         }
+
+        int[] speedGears = new int[] { 0, 10, 100, 1000 };
+        volatile int sleepTime = 10;
 
         /// <summary>
         /// <c>MainWindow</c> constructor.
         /// </summary>
         public MainWindow() {
             InitializeComponent();
+
+            sliderSpeed.Maximum = speedGears.Length - 1;
+            sliderSpeed.Minimum = 0;
 
             InitQuestionPresent();
 
@@ -163,6 +171,10 @@ namespace PicrosserUI {
             solvingWorker.ProgressChanged += solvingWorker_ProgressChanged;
             solvingWorker.RunWorkerCompleted += solvingWorker_RunWorkerCompleted;
 
+        }
+
+        private void sliderSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            sleepTime = speedGears[(int)Math.Round((sender as Slider).Value)];
         }
 
         private void buttonSubmit_Click(object sender, RoutedEventArgs e) {
