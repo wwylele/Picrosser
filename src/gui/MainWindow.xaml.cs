@@ -17,6 +17,7 @@ namespace PicrosserUI {
         Question question = new Question();
 
         Rectangle[,] pixels;
+        Rectangle cursor;
 
         Brush brushUnknown = new SolidColorBrush(Colors.Gray);
         Brush brushOn = new SolidColorBrush(Colors.Orange);
@@ -86,6 +87,14 @@ namespace PicrosserUI {
                     pixels[x, y].Fill = brushUnknown;
                     picrossCanvas.Children.Add(pixels[x, y]);
                 }
+            cursor = new Rectangle();
+            cursor.Fill = new SolidColorBrush(new Color() {
+                R = 0,
+                G = 0,
+                B = 255,
+                A = 100
+            });
+            picrossCanvas.Children.Add(cursor);
         }
 
         BackgroundWorker solvingWorker;
@@ -97,32 +106,36 @@ namespace PicrosserUI {
             solvingWorker.RunWorkerAsync();
         }
 
+        private void MoveRectangleToColOrRow(Rectangle rect,bool moveToCol,int index) {
+            if(moveToCol) {
+                rect.Margin = new Thickness(
+                    picrossPixelSize * (picrossLeftSpaces + index),
+                    0, 0, 0
+                    );
+                rect.Width = picrossPixelSize;
+                rect.Height = picrossPixelSize * (picrossTopSpaces + question.Height);
+            } else {
+                rect.Margin = new Thickness(
+                    0,
+                    picrossPixelSize * (picrossTopSpaces + index),
+                    0, 0
+                    );
+                rect.Height = picrossPixelSize;
+                rect.Width = picrossPixelSize * (picrossLeftSpaces + question.Width);
+            }
+        }
 
         Solver solver;
         private void solvingWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            picrossCanvas.Children.Remove(cursor);
             if(solver.Result == Solver.ResultEnum.CONTRADICTORY) {
                 Rectangle contRect = new Rectangle();
-                Color SemiRed = new Color();
-                SemiRed.R = 255;
-                SemiRed.G = SemiRed.B = 0;
-                SemiRed.A = 128;
-                contRect.Fill = new SolidColorBrush(SemiRed);
-                if(solver.ContradictoryInCols) {
-                    contRect.Margin = new Thickness(
-                        picrossPixelSize * (picrossLeftSpaces + solver.ContradictoryIndex),
-                        0, 0, 0
-                        );
-                    contRect.Width = picrossPixelSize;
-                    contRect.Height = picrossPixelSize * (picrossTopSpaces + question.Height);
-                } else {
-                    contRect.Margin = new Thickness(
-                        0,
-                        picrossPixelSize * (picrossTopSpaces + solver.ContradictoryIndex),
-                        0, 0
-                        );
-                    contRect.Height = picrossPixelSize;
-                    contRect.Width = picrossPixelSize * (picrossLeftSpaces + question.Width);
-                }
+                contRect.Fill = new SolidColorBrush(new Color() {
+                    R=255,G=0,B=0,A=128
+                });
+                MoveRectangleToColOrRow(contRect,
+                    solver.ContradictoryInCols,
+                    solver.ContradictoryIndex);
                 picrossCanvas.Children.Add(contRect);
                 MessageBox.Show("Find a contradiction when solving!\n"
                     + "No possible solution.");
@@ -136,18 +149,25 @@ namespace PicrosserUI {
 
         private void solvingWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             BackgroundWorker bw = (BackgroundWorker)sender;
-            Solver.Touch touch = (Solver.Touch)e.UserState;
-            pixels[touch.colIndex, touch.rowIndex].Fill =
-                touch.on ? brushOn : brushOff;
+            if(e.UserState is Solver.StepTouch) {
+                Solver.StepTouch touch = (Solver.StepTouch)e.UserState;
+                pixels[touch.colIndex, touch.rowIndex].Fill =
+                    touch.on ? brushOn : brushOff;
+            } else if(e.UserState is Solver.StepMove) {
+                Solver.StepMove move = (Solver.StepMove)e.UserState;
+                MoveRectangleToColOrRow(cursor, move.moveToCol, move.index);
+
+            }
+            
         }
         private void solvingWorker_DoWork(object sender, DoWorkEventArgs e) {
             solver = new Solver();
             BackgroundWorker bw = (BackgroundWorker)sender;
-            foreach(Solver.Touch touch in solver.SolveByStep(question)) {
+            foreach(object step in solver.SolveByStep(question)) {
                 int sleepTimeT = sleepTime;
-                if(sleepTimeT != 0)
+                if(step is Solver.StepTouch && sleepTimeT != 0)
                     Thread.Sleep(sleepTimeT);
-                bw.ReportProgress(0, touch);
+                bw.ReportProgress(0, step);
             }
         }
 

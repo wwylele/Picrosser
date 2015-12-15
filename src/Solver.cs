@@ -11,9 +11,9 @@ namespace Picrosser {
     public class Solver {
 
         /// <summary>
-        /// A class that decribes one step in a solution.
+        /// A class that decribes one touching step in a solution.
         /// </summary>
-        public class Touch {
+        public class StepTouch {
 
             /// <summary>
             /// Specifing the pixel position that is being operated.
@@ -25,6 +25,22 @@ namespace Picrosser {
             /// <c>false</c> means to turn off the pixel.
             /// </summary>
             public bool on;
+        }
+
+        /// <summary>
+        /// A class that decribes one moving step in a solution.
+        /// </summary>
+        public class StepMove {
+
+            /// <summary>
+            /// Indicating whether move to a column or a row.
+            /// </summary>
+            public bool moveToCol;
+
+            /// <summary>
+            /// The index of the column or the row.
+            /// </summary>
+            public int index;
         }
 
         /// <summary>
@@ -201,10 +217,13 @@ namespace Picrosser {
         /// Question question=new Question();
         /// Solver solver=new Solver();
         /// foreach(var step in solver.SolveByStep(question)){
-        ///     if(step.on)
-        ///         //turn on the pixel at (step.colIndex,step.rowIndex)
-        ///     else
-        ///         //turn off the pixel at (step.colIndex,step.rowIndex)
+        ///     if(step is TouchStep)
+        ///         if(((TouchStep)step).on)
+        ///             //turn on the pixel at (step.colIndex,step.rowIndex)
+        ///         else
+        ///             //turn off the pixel at (step.colIndex,step.rowIndex)
+        ///     else if(step is MoveStep)
+        ///         //move the cursor according to (MoveStep)step
         /// }
         /// switch(solver.Result){
         /// case Solver.ResultEnum.CONTRADICTORY:
@@ -219,7 +238,7 @@ namespace Picrosser {
         /// }
         /// </code>
         /// </example>
-        public IEnumerable<Touch> SolveByStep(Question question) {
+        public IEnumerable<object> SolveByStep(Question question) {
             Result = ResultEnum.SOLVING;
             pixelStates = new PixelStateEnum[question.Width, question.Height];
             IEnumerable<BitArray>[][] candidates = new IEnumerable<BitArray>[2][]{
@@ -244,6 +263,10 @@ namespace Picrosser {
 
                 for(int flip = 0; flip < 2; ++flip, hw = width, width = height, height = hw) {
                     for(int index = 0; index < width; ++index) {
+                        yield return new StepMove {
+                            moveToCol = flip == 0,
+                            index = index
+                        };
                         BitArray onSlice = GetSlice[flip](index, true);
                         BitArray offSlice = GetSlice[flip](index, false);
 
@@ -272,7 +295,7 @@ namespace Picrosser {
                             if(onSlice.Get(i)) {
                                 worked = true;
                                 pixelStates[x, y] = PixelStateEnum.ON;
-                                yield return new Touch {
+                                yield return new StepTouch {
                                     colIndex = x,
                                     rowIndex = y,
                                     on = true
@@ -280,7 +303,7 @@ namespace Picrosser {
                             } else if(offSlice.Get(i)) {
                                 worked = true;
                                 pixelStates[x, y] = PixelStateEnum.OFF;
-                                yield return new Touch {
+                                yield return new StepTouch {
                                     colIndex = x,
                                     rowIndex = y,
                                     on = false
