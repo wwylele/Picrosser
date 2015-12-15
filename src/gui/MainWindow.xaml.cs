@@ -174,7 +174,7 @@ namespace PicrosserUI {
         }
 
         private void sliderSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            sleepTime = speedGears[(int)Math.Round((sender as Slider).Value)];
+            sleepTime = speedGears[(int)((sender as Slider).Value)];
         }
 
         private void buttonSubmit_Click(object sender, RoutedEventArgs e) {
