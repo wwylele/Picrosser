@@ -152,7 +152,7 @@ namespace PicrosserUI {
         }
 
         int[] speedGears = new int[] { 0, 10, 100, 1000 };
-        volatile int sleepTime = 10;
+        volatile int sleepTime;
 
         /// <summary>
         /// <c>MainWindow</c> constructor.
@@ -162,6 +162,7 @@ namespace PicrosserUI {
 
             sliderSpeed.Maximum = speedGears.Length - 1;
             sliderSpeed.Minimum = 0;
+            sliderSpeed.Value = 1;
 
             InitQuestionPresent();
 
