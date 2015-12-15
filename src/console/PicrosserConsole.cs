@@ -20,7 +20,7 @@ namespace PicrosserConsole {
                 return;
             }
             Solver solver = new Solver();
-            foreach(var step in solver.Solve(question)) ;
+            solver.Solve(question);
             for(int y = 0; y < question.Height; ++y) {
                 for(int x = 0; x < question.Width; ++x) {
                     switch(solver.GetPixelState(x, y)) {

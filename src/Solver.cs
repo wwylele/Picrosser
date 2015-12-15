@@ -191,7 +191,7 @@ namespace Picrosser {
             return newCandidates;
         }
         /// <summary>
-        /// Solve a picross puzzle.
+        /// Solve a picross puzzle, by enumerate each steps.
         /// </summary>
         /// <param name="question">The picross puzzle to be solved.</param>
         /// <returns>An IEnumerable of solution steps.</returns>
@@ -200,11 +200,11 @@ namespace Picrosser {
         /// <code>
         /// Question question=new Question();
         /// Solver solver=new Solver();
-        /// foreach(var step in solver.Solve(question)){
+        /// foreach(var step in solver.SolveByStep(question)){
         ///     if(step.on)
         ///         //turn on the pixel at (step.colIndex,step.rowIndex)
         ///     else
-        ///         //turn pff the pixel at (step.colIndex,step.rowIndex)
+        ///         //turn off the pixel at (step.colIndex,step.rowIndex)
         /// }
         /// switch(solver.Result){
         /// case Solver.ResultEnum.CONTRADICTORY:
@@ -219,7 +219,7 @@ namespace Picrosser {
         /// }
         /// </code>
         /// </example>
-        public IEnumerable<Touch> Solve(Question question) {
+        public IEnumerable<Touch> SolveByStep(Question question) {
             Result = ResultEnum.SOLVING;
             pixelStates = new PixelStateEnum[question.Width, question.Height];
             IEnumerable<BitArray>[][] candidates = new IEnumerable<BitArray>[2][]{
@@ -308,6 +308,16 @@ namespace Picrosser {
 
 
             yield break;
+        }
+
+        /// <summary>
+        /// Solve a picross puzzle.
+        /// </summary>
+        /// <param name="question">The result from solving.</param>
+        /// <returns></returns>
+        public ResultEnum Solve(Question question) {
+            foreach(var step in SolveByStep(question)) ;
+            return Result;
         }
     }
 }

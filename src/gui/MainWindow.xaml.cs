@@ -143,7 +143,7 @@ namespace PicrosserUI {
         private void solvingWorker_DoWork(object sender, DoWorkEventArgs e) {
             solver = new Solver();
             BackgroundWorker bw = (BackgroundWorker)sender;
-            foreach(Solver.Touch touch in solver.Solve(question)) {
+            foreach(Solver.Touch touch in solver.SolveByStep(question)) {
                 Thread.Sleep(10);
                 bw.ReportProgress(0, touch);
             }
