@@ -23,14 +23,14 @@ namespace PicrosserConsole {
             solver.Solve(question);
             for(int y = 0; y < question.Height; ++y) {
                 for(int x = 0; x < question.Width; ++x) {
-                    switch(solver.GetPixelState(x, y)) {
-                    case Solver.PixelStateEnum.UNKNOWN:
+                    switch(solver.pixelStates[x, y]) {
+                    case PixelStateEnum.UNKNOWN:
                         Console.Write(" ?");
                         break;
-                    case Solver.PixelStateEnum.ON:
+                    case PixelStateEnum.ON:
                         Console.Write(" *");
                         break;
-                    case Solver.PixelStateEnum.OFF:
+                    case PixelStateEnum.OFF:
                         Console.Write("  ");
                         break;
                     }

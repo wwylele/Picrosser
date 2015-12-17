@@ -6,7 +6,22 @@ using System.Linq;
 namespace Picrosser {
 
     /// <summary>
-    /// Picross puzzle solver class.
+    /// An enum type describing the state of a pixel.
+    /// </summary>
+    public enum PixelStateEnum {
+
+        /// <summary>The pixel has not been operated.</summary>
+        UNKNOWN,
+
+        /// <summary>The pixel has been turned on. </summary>
+        ON,
+
+        /// <summary>The pixel has been turned off. </summary>
+        OFF
+    }
+
+    /// <summary>
+    /// Picross puzzle solver class. Can only solve puzzles without assuming
     /// </summary>
     public class Solver {
 
@@ -44,53 +59,20 @@ namespace Picrosser {
         }
 
         /// <summary>
-        /// An enum type describing the state of a pixel.
+        /// <para>
+        /// This field should be set to an initial state of pixels, 
+        /// or <c>null</c> (indicating all pixels are unknown), 
+        /// before calling <c>Solve</c> or <c>SolveByStep</c>.
+        /// The dimension of this array should match the size of quesion 
+        /// that passed to <c>Solve</c> or <c>SolveByStep</c>.
+        /// </para>
+        /// <para>
+        /// After calling <c>Solve</c> or <c>SolveByStep</c>, 
+        /// all pixel states are set to be the result.
+        /// </para>
         /// </summary>
-        public enum PixelStateEnum {
+        public PixelStateEnum[,] pixelStates;
 
-            /// <summary>The pixel has not been operated.</summary>
-            UNKNOWN,
-
-            /// <summary>The pixel has been turned on. </summary>
-            ON,
-
-            /// <summary>The pixel has been turned off. </summary>
-            OFF
-        }
-
-        PixelStateEnum[,] pixelStates;
-
-        /// <summary>
-        /// Get the state of a specified pixel.
-        /// </summary>
-        /// <param name="colIndex">Column index of the pixel.</param>
-        /// <param name="rowIndex">Row index of the pixel.</param>
-        /// <returns>The state of the pixel.</returns>
-        public PixelStateEnum GetPixelState(int colIndex, int rowIndex) {
-            return pixelStates[colIndex, rowIndex];
-        }
-
-        /// <summary>
-        /// Get the solution of the puzzle. 
-        /// Can be called only after calling <c>Solve</c> and 
-        /// <c>Result==Solver.Result.Enum.FINISHED</c>.
-        /// </summary>
-        /// <returns>The solution</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Throw if <c>Result!=Solver.Result.Enum.FINISHED</c>.
-        /// </exception>
-        public bool[,] GetSolution() {
-            if(Result != ResultEnum.FINISHED)
-                throw new InvalidOperationException();
-            int w = pixelStates.GetLength(0);
-            int h = pixelStates.GetLength(1);
-            bool[,] sol = new bool[w, h];
-            for(int y = 0; y < h; ++y)
-                for(int x = 0; x < w; ++x) {
-                    sol[x, y] = pixelStates[x, y] == PixelStateEnum.ON;
-                }
-            return sol;
-        }
 
         BitArray GetColSlice(int colIndex, bool on) {
             BitArray result = new BitArray(pixelStates.GetLength(1));
@@ -112,7 +94,7 @@ namespace Picrosser {
         /// </summary>
         public enum ResultEnum {
 
-            /// <summary>The method <c>Solve</c> has not been called 
+            /// <summary>The method <c>Solve</c> or <c>SolveByStep</c> has not been called 
             /// or has not finished.</summary>
             SOLVING,
 
@@ -127,13 +109,15 @@ namespace Picrosser {
         }
 
         /// <summary>
-        /// The solving state of the <c>Solver</c>
+        /// Set after calling <c>Solve</c> or <c>SolveByStep</c>.
+        /// The solving state of the <c>Solver</c>.
         /// </summary>
         public ResultEnum Result {
             get; private set;
         }
 
         /// <summary>
+        /// Set after calling <c>Solve</c> or <c>SolveByStep</c>.
         /// Valid only if <c>Result==ResultEnum.CONTRADICTORY</c>. 
         /// Indicating whether the contradiction was found in a column or not.
         /// </summary>
@@ -142,6 +126,7 @@ namespace Picrosser {
         }
 
         /// <summary>
+        /// Set after calling <c>Solve</c> or <c>SolveByStep</c>.
         /// Valid only if <c>Result==ResultEnum.CONTRADICTORY</c>. 
         /// Indicating the index of the column/row that contains contradiction.
         /// </summary>
@@ -149,7 +134,25 @@ namespace Picrosser {
             get; private set;
         }
 
-        static IEnumerable<int[]/*Spaces before each number*/> EnumNumberSpaces(int[] numbers, int length) {
+        /// <summary>
+        /// Set after calling <c>Solve</c> or <c>SolveByStep</c>.
+        /// Valid only if <c>Result==ResultEnum.INDEFINITE</c>. 
+        /// The column index of the first unknown pixels after solving. 
+        /// </summary>
+        public int FirstUnknownColIndex {
+            get; private set;
+        }
+        /// <summary>
+        /// Set after calling <c>Solve</c> or <c>SolveByStep</c>.
+        /// Valid only if <c>Result==ResultEnum.INDEFINITE</c>. 
+        /// The row index of the first unknown pixels after solving. 
+        /// </summary>
+        public int FirstUnknownRowIndex {
+            get; private set;
+        }
+
+        static IEnumerable<int[]/*Spaces before each number*/>
+            EnumNumberSpaces(int[] numbers, int length) {
             int[] spaces = new int[numbers.Length];
             length -= numbers.Sum();
             if(length < numbers.Length - 1) yield break;
@@ -190,24 +193,22 @@ namespace Picrosser {
             return result;
         }
 
+        //Helper functions for BitArray
         static bool IsZero(BitArray b) {
             foreach(bool k in b) if(k) return false;
             return true;
         }
-
-        static IEnumerable<BitArray> FilterCandidates(
-            IEnumerable<BitArray> cans, BitArray onSlice, BitArray offSlice) {
-            LinkedList<BitArray> newCandidates = new LinkedList<BitArray>();
-            foreach(BitArray bits in cans) {
-                if(IsZero(((BitArray)bits.Clone()).And(offSlice)) &&
-                    IsZero(((BitArray)bits.Clone()).Not().And(onSlice))) {
-                    newCandidates.AddLast(bits);
-                }
-            }
-            return newCandidates;
+        static BitArray And(BitArray a, BitArray b) {
+            return ((BitArray)a.Clone()).And(b);
         }
+        static BitArray Not(BitArray a) {
+            return ((BitArray)a.Clone()).Not();
+        }
+
         /// <summary>
         /// Solve a picross puzzle, by enumerate each steps.
+        /// If the field <c>pixelStates</c> is not null, this method 
+        /// will use it as the initial state of the puzzle.
         /// </summary>
         /// <param name="question">The picross puzzle to be solved.</param>
         /// <returns>An IEnumerable of solution steps.</returns>
@@ -240,7 +241,12 @@ namespace Picrosser {
         /// </example>
         public IEnumerable<object> SolveByStep(Question question) {
             Result = ResultEnum.SOLVING;
-            pixelStates = new PixelStateEnum[question.Width, question.Height];
+            if(pixelStates == null)
+                pixelStates = new PixelStateEnum[question.Width, question.Height];
+            if(pixelStates.GetLength(0) != question.Width ||
+                pixelStates.GetLength(1) != question.Height) {
+                throw new InvalidOperationException("The initial state of pixelStates is invalid");
+            }
             IEnumerable<BitArray>[][] candidates = new IEnumerable<BitArray>[2][]{
                 new IEnumerable<BitArray>[question.Width],
                 new IEnumerable<BitArray>[question.Height]
@@ -270,7 +276,10 @@ namespace Picrosser {
                         BitArray onSlice = GetSlice[flip](index, true);
                         BitArray offSlice = GetSlice[flip](index, false);
 
-                        candidates[flip][index] = FilterCandidates(candidates[flip][index], onSlice, offSlice);
+                        candidates[flip][index] = (from k in candidates[flip][index]
+                                                   where IsZero(And(k, offSlice)) &&
+                                                           IsZero(And(Not(k), onSlice))
+                                                   select k).ToList();
                         if(!candidates[flip][index].Any()) {
                             Result = ResultEnum.CONTRADICTORY;
                             ContradictoryInCols = flip == 0;
@@ -281,7 +290,7 @@ namespace Picrosser {
                         offSlice.Not();
                         foreach(BitArray bits in candidates[flip][index]) {
                             onSlice.And(bits);
-                            offSlice.And(((BitArray)bits.Clone()).Not());
+                            offSlice.And(Not(bits));
                         }
                         for(int i = 0; i < height; ++i) {
                             int x, y;
@@ -322,6 +331,8 @@ namespace Picrosser {
             for(int ci = 0; ci < question.Width; ++ci)
                 for(int ri = 0; ri < question.Height; ++ri) {
                     if(pixelStates[ci, ri] == PixelStateEnum.UNKNOWN) {
+                        FirstUnknownColIndex = ci;
+                        FirstUnknownRowIndex = ri;
                         Result = ResultEnum.INDEFINITE;
                         goto tag_indefinite;
                     }
@@ -335,6 +346,8 @@ namespace Picrosser {
 
         /// <summary>
         /// Solve a picross puzzle.
+        /// If the field <c>pixelStates</c> is not null, this method 
+        /// will use it as the initial state of the puzzle.
         /// </summary>
         /// <param name="question">The result from solving.</param>
         /// <returns></returns>
