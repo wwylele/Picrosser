@@ -106,7 +106,7 @@ namespace PicrosserUI {
             solvingWorker.RunWorkerAsync();
         }
 
-        private void MoveRectangleToColOrRow(Rectangle rect,bool moveToCol,int index) {
+        private void MoveRectangleToColOrRow(Rectangle rect, bool moveToCol, int index) {
             if(moveToCol) {
                 rect.Margin = new Thickness(
                     picrossPixelSize * (picrossLeftSpaces + index),
@@ -131,7 +131,7 @@ namespace PicrosserUI {
             if(solver.Result == Solver.ResultEnum.CONTRADICTORY) {
                 Rectangle contRect = new Rectangle();
                 contRect.Fill = new SolidColorBrush(new Color() {
-                    R=255,G=0,B=0,A=128
+                    R = 255, G = 0, B = 0, A = 128
                 });
                 MoveRectangleToColOrRow(contRect,
                     solver.ContradictoryInCols,
@@ -158,7 +158,7 @@ namespace PicrosserUI {
                 MoveRectangleToColOrRow(cursor, move.moveToCol, move.index);
 
             }
-            
+
         }
         private void solvingWorker_DoWork(object sender, DoWorkEventArgs e) {
             solver = new Solver();
