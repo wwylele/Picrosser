@@ -14,7 +14,7 @@ namespace PicrosserUI {
     /// MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        string windowTitle = "Picross by wwylele";
+        string windowTitle = "Picrosser by wwylele";
         Question question = new Question();
 
         Rectangle[,] pixels;
