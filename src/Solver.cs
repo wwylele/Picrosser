@@ -355,5 +355,41 @@ namespace Picrosser {
             foreach(var step in SolveByStep(question)) ;
             return Result;
         }
+
+        /// <summary>
+        /// Search all possible solutions for the given puzzle. 
+        /// The function is implemented in DFS. 
+        /// Some puzzle with unique awnser that cannot be solved 
+        /// by <c>Solver.Solve</c> or <c>Solver.SolveByStep</c> can also 
+        /// be solved by this function.
+        /// </summary>
+        /// <param name="question"></param>
+        /// <returns></returns>
+        public static IEnumerable<PixelStateEnum[,]> SolveBySearching(Question question) {
+            var works = new LinkedList<PixelStateEnum[,]>();
+            works.AddFirst(new PixelStateEnum[question.Width, question.Height]);
+            Solver solver = new Solver();
+            while(works.Any()) {
+                solver.pixelStates = works.First();
+                works.RemoveFirst();
+                switch(solver.Solve(question)) {
+                case Solver.ResultEnum.FINISHED:
+                    yield return solver.pixelStates;
+                    break;
+                case Solver.ResultEnum.INDEFINITE:
+                    PixelStateEnum[,] a, b;
+                    a = solver.pixelStates;
+                    b = (PixelStateEnum[,])a.Clone();
+                    a[solver.FirstUnknownColIndex, solver.FirstUnknownRowIndex]
+                        = PixelStateEnum.OFF;
+                    b[solver.FirstUnknownColIndex, solver.FirstUnknownRowIndex]
+                        = PixelStateEnum.ON;
+                    works.AddFirst(a);
+                    works.AddFirst(b);
+                    break;
+                }
+            }
+            yield break;
+        }
     }
 }

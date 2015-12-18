@@ -19,34 +19,32 @@ namespace PicrosserConsole {
                 Console.WriteLine("Invalid Picross!");
                 return;
             }
-            Solver solver = new Solver();
-            solver.Solve(question);
-            for(int y = 0; y < question.Height; ++y) {
-                for(int x = 0; x < question.Width; ++x) {
-                    switch(solver.pixelStates[x, y]) {
-                    case PixelStateEnum.UNKNOWN:
-                        Console.Write(" ?");
-                        break;
-                    case PixelStateEnum.ON:
-                        Console.Write(" *");
-                        break;
-                    case PixelStateEnum.OFF:
-                        Console.Write("  ");
-                        break;
+
+            bool found = false;
+            foreach(var ps in Solver.SolveBySearching(question)) {
+                found = true;
+                Console.WriteLine("=======================");
+                for(int y = 0; y < question.Height; ++y) {
+                    for(int x = 0; x < question.Width; ++x) {
+                        switch(ps[x, y]) {
+                        case PixelStateEnum.UNKNOWN:
+                            Console.Write(" ?");
+                            break;
+                        case PixelStateEnum.ON:
+                            Console.Write(" *");
+                            break;
+                        case PixelStateEnum.OFF:
+                            Console.Write("  ");
+                            break;
+                        }
                     }
+                    Console.WriteLine("");
                 }
-                Console.WriteLine();
             }
-            switch(solver.Result) {
-            case Solver.ResultEnum.CONTRADICTORY:
-                Console.Write("Found a contradiction!");
-                break;
-            case Solver.ResultEnum.INDEFINITE:
-                Console.Write("Failed to find a unique solution!");
-                break;
-            case Solver.ResultEnum.FINISHED:
-                Console.Write("Finished!");
-                break;
+            if(!found) {
+                Console.WriteLine("No solution found");
+            } else {
+                Console.WriteLine("Finished");
             }
         }
     }
