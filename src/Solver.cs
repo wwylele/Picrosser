@@ -373,10 +373,10 @@ namespace Picrosser {
                 solver.pixelStates = works.First();
                 works.RemoveFirst();
                 switch(solver.Solve(question)) {
-                case Solver.ResultEnum.FINISHED:
+                case ResultEnum.FINISHED:
                     yield return solver.pixelStates;
                     break;
-                case Solver.ResultEnum.INDEFINITE:
+                case ResultEnum.INDEFINITE:
                     PixelStateEnum[,] a, b;
                     a = solver.pixelStates;
                     b = (PixelStateEnum[,])a.Clone();
