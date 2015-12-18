@@ -205,6 +205,45 @@ namespace Picrosser {
             return ((BitArray)a.Clone()).Not();
         }
 
+        //These are used for SolveBySearching to hack in SoveByStep
+        //to reuse candidates sets.
+        private bool usePresetCandidates = false;
+        private IEnumerable<BitArray>
+            [/* 0:cols,1:rows */]
+            [/* col/row index */] candidates;
+        //Create a inital candidates set from the question
+        private static IEnumerable<BitArray>[][] GetInitCandidatesSet(Question question) {
+            var candidates = new IEnumerable<BitArray>[2][]{
+                    new IEnumerable<BitArray>[question.Width],
+                    new IEnumerable<BitArray>[question.Height]
+                };
+            for(int coli = 0; coli < question.Width; ++coli) {
+                candidates[0][coli] = GetAllCandidates(question.GetColNumbers(coli), question.Height);
+            }
+            for(int rowi = 0; rowi < question.Height; ++rowi) {
+                candidates[1][rowi] = GetAllCandidates(question.GetRowNumbers(rowi), question.Width);
+            }
+            return candidates;
+        }
+        // Create a "deep" clone of a candidates set:
+        // - clone the set itself,
+        // - clone column array and rows array,
+        // - clone the IEnumerable for each column/row,
+        // - but not clone each BitArray, since we use it as immutable
+        private static IEnumerable<BitArray>[][] CloneCandidatesSet(IEnumerable<BitArray>[][] c) {
+            var candidates = new IEnumerable<BitArray>[2][]{
+                    new IEnumerable<BitArray>[c[0].Length],
+                    new IEnumerable<BitArray>[c[1].Length]
+                };
+            for(int i = 0; i < c[0].Length; ++i) {
+                candidates[0][i] = c[0][i].ToList();
+            }
+            for(int i = 0; i < c[1].Length; ++i) {
+                candidates[1][i] = c[1][i].ToList();
+            }
+            return candidates;
+        }
+
         /// <summary>
         /// Solve a picross puzzle, by enumerate each steps.
         /// If the field <c>pixelStates</c> is not null, this method 
@@ -247,15 +286,10 @@ namespace Picrosser {
                 pixelStates.GetLength(1) != question.Height) {
                 throw new InvalidOperationException("The initial state of pixelStates is invalid");
             }
-            IEnumerable<BitArray>[][] candidates = new IEnumerable<BitArray>[2][]{
-                new IEnumerable<BitArray>[question.Width],
-                new IEnumerable<BitArray>[question.Height]
-            };
-            for(int coli = 0; coli < question.Width; ++coli) {
-                candidates[0][coli] = GetAllCandidates(question.GetColNumbers(coli), question.Height);
-            }
-            for(int rowi = 0; rowi < question.Height; ++rowi) {
-                candidates[1][rowi] = GetAllCandidates(question.GetRowNumbers(rowi), question.Width);
+            if(!usePresetCandidates) {
+                //If we didn't get hacked by SolveBySearching,
+                //just produce CandidatesSet normally.
+                candidates = GetInitCandidatesSet(question);
             }
 
             int width = question.Width;
@@ -367,11 +401,16 @@ namespace Picrosser {
         /// <returns>An IEnumerable of each solutions.</returns>
         public static IEnumerable<PixelStateEnum[,]> SolveBySearching(Question question) {
             var works = new LinkedList<PixelStateEnum[,]>();
+            var candidatesList = new LinkedList<IEnumerable<BitArray>[][]>();
             works.AddFirst(new PixelStateEnum[question.Width, question.Height]);
+            candidatesList.AddFirst(GetInitCandidatesSet(question));
             Solver solver = new Solver();
+            solver.usePresetCandidates = true;
             while(works.Any()) {
                 solver.pixelStates = works.First();
+                solver.candidates = candidatesList.First();
                 works.RemoveFirst();
+                candidatesList.RemoveFirst();
                 switch(solver.Solve(question)) {
                 case ResultEnum.FINISHED:
                     yield return solver.pixelStates;
@@ -380,12 +419,16 @@ namespace Picrosser {
                     PixelStateEnum[,] a, b;
                     a = solver.pixelStates;
                     b = (PixelStateEnum[,])a.Clone();
+                    IEnumerable<BitArray>[][] cloneCan;
+                    cloneCan = CloneCandidatesSet(solver.candidates);
                     a[solver.FirstUnknownColIndex, solver.FirstUnknownRowIndex]
                         = PixelStateEnum.OFF;
                     b[solver.FirstUnknownColIndex, solver.FirstUnknownRowIndex]
                         = PixelStateEnum.ON;
                     works.AddFirst(a);
                     works.AddFirst(b);
+                    candidatesList.AddFirst(solver.candidates);
+                    candidatesList.AddFirst(cloneCan);
                     break;
                 }
             }
