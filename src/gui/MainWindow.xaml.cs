@@ -14,6 +14,7 @@ namespace PicrosserUI {
     /// MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        string windowTitle = "Picross by wwylele";
         Question question = new Question();
 
         Rectangle[,] pixels;
@@ -97,12 +98,13 @@ namespace PicrosserUI {
             picrossCanvas.Children.Add(cursor);
         }
 
-        BackgroundWorker solvingWorker;
+        BackgroundWorker solvingWorker, searchingWorker;
 
         private void buttonSolve_Click(object sender, RoutedEventArgs e) {
             buttonSolve.IsEnabled = false;
             buttonSubmit.IsEnabled = false;
             InitQuestionPresent();
+            Title = windowTitle + " (solving..)";
             solvingWorker.RunWorkerAsync();
         }
 
@@ -137,14 +139,23 @@ namespace PicrosserUI {
                     solver.ContradictoryInCols,
                     solver.ContradictoryIndex);
                 picrossCanvas.Children.Add(contRect);
-                MessageBox.Show("Find a contradiction when solving!\n"
-                    + "No possible solution.");
+                MessageBox.Show("Find a contradiction when solving!\n",
+                    "No possible solution.");
             } else if(solver.Result == Solver.ResultEnum.INDEFINITE) {
-                MessageBox.Show("Cannot determine the rest pixels.\n"
-                    + "Maybe there are more than one solutions.");
+                if(MessageBox.Show("Cannot determine the rest pixels.\n"
+                    + "The puzzle is hard, and may have more than one solutions.\n"
+                    + "Do you want me to search all solutions?",
+                    "First try failed", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    Title = windowTitle + " (searching...)";
+                    searchingWorker.RunWorkerAsync();
+                    return;
+                }
+
+
             }
             buttonSolve.IsEnabled = true;
             buttonSubmit.IsEnabled = true;
+            Title = windowTitle;
         }
 
         private void solvingWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -180,6 +191,8 @@ namespace PicrosserUI {
         public MainWindow() {
             InitializeComponent();
 
+            Title = windowTitle;
+
             sliderSpeed.Maximum = speedGears.Length - 1;
             sliderSpeed.Minimum = 0;
             sliderSpeed.Value = 1;
@@ -192,6 +205,38 @@ namespace PicrosserUI {
             solvingWorker.ProgressChanged += solvingWorker_ProgressChanged;
             solvingWorker.RunWorkerCompleted += solvingWorker_RunWorkerCompleted;
 
+            searchingWorker = new BackgroundWorker();
+            searchingWorker.WorkerReportsProgress = true;
+            searchingWorker.DoWork += SearchingWorker_DoWork;
+            searchingWorker.ProgressChanged += SearchingWorker_ProgressChanged;
+            searchingWorker.RunWorkerCompleted += SearchingWorker_RunWorkerCompleted;
+
+        }
+
+        private void SearchingWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            MessageBox.Show("Search completed.");
+            buttonSolve.IsEnabled = true;
+            buttonSubmit.IsEnabled = true;
+            Title = windowTitle;
+        }
+
+        private void SearchingWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            PixelStateEnum[,] pixelStates = e.UserState as PixelStateEnum[,];
+            for(int x = 0; x < question.Width; ++x) {
+                for(int y = 0; y < question.Height; ++y) {
+                    pixels[x, y].Fill = pixelStates[x, y] == PixelStateEnum.ON ?
+                        brushOn : brushOff;
+                }
+            }
+        }
+
+        private void SearchingWorker_DoWork(object sender, DoWorkEventArgs e) {
+            BackgroundWorker bw = (BackgroundWorker)sender;
+            foreach(var ps in Solver.SolveBySearching(question)) {
+                bw.ReportProgress(0, ps);
+                if(MessageBox.Show("Found a solution, continue to search?",
+                    "continue?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) break; 
+            }
         }
 
         private void sliderSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {

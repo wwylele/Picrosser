@@ -363,8 +363,8 @@ namespace Picrosser {
         /// by <c>Solver.Solve</c> or <c>Solver.SolveByStep</c> can also 
         /// be solved by this function.
         /// </summary>
-        /// <param name="question"></param>
-        /// <returns></returns>
+        /// <param name="question">The puzzle to be solved.</param>
+        /// <returns>An IEnumerable of each solutions.</returns>
         public static IEnumerable<PixelStateEnum[,]> SolveBySearching(Question question) {
             var works = new LinkedList<PixelStateEnum[,]>();
             works.AddFirst(new PixelStateEnum[question.Width, question.Height]);
