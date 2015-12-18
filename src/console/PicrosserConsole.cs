@@ -9,6 +9,7 @@ namespace PicrosserConsole {
             int sec = 0;
             while(sec < 2) {
                 line = Console.ReadLine();
+                if(line == null) line = "";
                 text += line + "\n";
                 if(line.Equals("")) ++sec;
             }
