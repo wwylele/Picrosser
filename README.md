@@ -9,12 +9,15 @@ I know there are lots of research on this problem have been done, and tons of pi
 
 
 ## Usage
+
+### A simple example
 For a Picross puzzle like this:
 
-![](https://raw.githubusercontent.com/wwylele/Picrosser/master/Examples/ExampleFrom_3dspmp.jpg)
+![Example1](Examples/example1.jpg)
+
 (Shoot from Pokemon Picross on my 3DS)
 
-Type the following text into the text box:
+Type the following text into the text box: ([txt here!](Examples/example1/txt))
 ```
 3
 5
@@ -39,7 +42,19 @@ Type the following text into the text box:
 2 2
 ```
 
-Then press 'Submit Picross', and press 'Solve this', you will get the result:
-![](https://raw.githubusercontent.com/wwylele/Picrosser/master/Examples/Example_Result.PNG)
+Then click 'Submit Picross', and click 'Solve this', you will get the result:
+![ScreenShotExample1Result](Examples/example1_result.png)
+
+### A not-so-simple example
+Here is another Picross puzzle:
+
+![Example2](Examples/example2.png)
+
+After typing the numbers into the window as we did in the first example, 
+click 'Submit Picross' and 'Solve this', you will get message box indicating that
+this is a hard puzzle that the program cannot solve in the simple way, 
+and ask if try to search all solutions. This is often caused by a puzzle with multiple solutions (but not for this example, which truly has a unique solution). Now click 'Yes', then the program will begin searching (currently the algorithm is implemented as a stupid DFS, and it may take several minutes or more to search). Then each time the program find a solution, it will show the solution and ask if to continue. The searching will stop when choosing not to continue, or it has searched all possibility. As for this example, the program will find its unique solution:
+![ScreenShotExample2Result](Examples/example2_result.png)
+
 
 At this point, the solver is far from finished - despite of the speed, there are even some picross puzzle that it cannot solve.
