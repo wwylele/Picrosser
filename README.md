@@ -54,6 +54,10 @@ Here is another Picross puzzle: ([txt here!](Examples/example2.txt))
 After typing the numbers into the window as we did in the first example, 
 click 'Submit Picross' and 'Solve this', you will get message box indicating that
 this is a hard puzzle that the program cannot solve in the simple way, 
-and ask if try to search all solutions. This is often caused by a puzzle with multiple solutions (but not for this example, which truly has a unique solution). Now click 'Yes', then the program will begin searching (currently the algorithm is implemented as a stupid DFS, and it may take several minutes or more to search). Then each time the program find a solution, it will show the solution and ask if to continue. The searching will stop when choosing not to continue, or it has searched all possibility. As for this example, the program will find its unique solution:
+and ask if try to search all solutions. This is often caused by a puzzle with multiple solutions (but not for this example, which truly has a unique solution). 
+
+Now click 'Yes', then the program will begin searching (currently the algorithm is implemented as a stupid DFS, and it may take several minutes or more to search). Then each time the program find a solution, it will show the solution and ask if to continue. The searching will stop when choosing not to continue, or it has searched all possibility. 
+
+As for this example, the program will find its unique solution:
 
 ![ScreenShotExample2Result](Examples/example2_result.png)
