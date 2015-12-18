@@ -144,7 +144,7 @@ namespace PicrosserUI {
             } else if(solver.Result == Solver.ResultEnum.INDEFINITE) {
                 if(MessageBox.Show("Cannot determine the rest pixels.\n"
                     + "The puzzle is hard, and may have more than one solutions.\n"
-                    + "Do you want me to search all solutions?",
+                    + "Do you want me to search for all solutions?",
                     "First try failed", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     Title = windowTitle + " (searching...)";
                     searchingWorker.RunWorkerAsync();
@@ -214,7 +214,7 @@ namespace PicrosserUI {
         }
 
         private void SearchingWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-            MessageBox.Show("Search completed.");
+            MessageBox.Show("Search completed.", "Completed");
             buttonSolve.IsEnabled = true;
             buttonSubmit.IsEnabled = true;
             Title = windowTitle;
@@ -235,7 +235,7 @@ namespace PicrosserUI {
             foreach(var ps in Solver.SolveBySearching(question)) {
                 bw.ReportProgress(0, ps);
                 if(MessageBox.Show("Found a solution, continue to search?",
-                    "continue?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) break; 
+                    "Continue?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) break;
             }
         }
 
@@ -248,7 +248,7 @@ namespace PicrosserUI {
             try {
                 newQuestion = new Question(textPicross.Text);
             } catch(ArgumentException) {
-                MessageBox.Show("Invalid Picross!");
+                MessageBox.Show("Invalid Picross!", "Wrong input");
                 return;
             }
             question = newQuestion;
