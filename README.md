@@ -8,7 +8,7 @@ I know there are lots of research on this problem have been done, and tons of pi
  - I just love coding :smile:
 
 
-## Usage
+## Usage (GUI version)
 
 ### A simple example
 For a Picross puzzle like this:
@@ -61,3 +61,52 @@ Now click 'Yes', then the program will begin searching (currently the algorithm 
 As for this example, the program will find its unique solution:
 
 ![ScreenShotExample2Result](Examples/example2_result.png)
+
+## Usage (console version)
+Input a file
+
+```
+>PicrosserConsole Examples\example1.txt
+=======================
+             * * * *
+       * * * * * * *
+     * * * * * * * *
+     * * * * * * * *
+     *
+   *               *
+ * *   *       *   *
+ * *   * * *   *   *
+ * *     * *       *
+   * *     * *
+Finished
+```
+or type the puzzle into the console while running:
+```
+>PicrosserConsole
+Please input the picross puzzle:
+1 1
+1 1
+1 1
+1 1
+
+1 1
+1 1
+1 1
+1 1
+
+=======================
+ *   *
+   *   *
+ *   *
+   *   *
+=======================
+   *   *
+ *   *
+   *   *
+ *   *
+Finished
+```
+(Note that two new lines should be typed to finish input)
+
+In console version, the solver will automatically begin a search algorithm to find all solutions.
+
