@@ -1,18 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Picrosser;
 namespace PicrosserConsole {
     class PicrosserConsole {
         static void Main(string[] args) {
             string text = "", line;
             int sec = 0;
-            while(sec < 2) {
-                line = Console.ReadLine();
-                if(line == null) line = "";
-                text += line + "\n";
-                if(line.Equals("")) ++sec;
+            if(args.Length != 0) {
+                try {
+                    StreamReader file = new StreamReader(args[0]);
+                    while(sec < 2) {
+                        line = file.ReadLine();
+                        if(line == null) line = "";
+                        text += line + "\n";
+                        if(line.Equals("")) ++sec;
+                    }
+                    file.Close();
+                } catch(Exception) {
+                    Console.WriteLine("Failed to open the file.");
+                    return;
+                }
+
+            } else {
+                Console.WriteLine("Please input the picross puzzle:");
+                while(sec < 2) {
+                    line = Console.ReadLine();
+                    if(line == null) line = "";
+                    text += line + "\n";
+                    if(line.Equals("")) ++sec;
+                }
             }
+
             Question question;
             try {
                 question = new Question(text);
