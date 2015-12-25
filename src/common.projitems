@@ -9,6 +9,7 @@
     <Import_RootNamespace>common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)MyBitArray.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Question.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Solver.cs" />
   </ItemGroup>
