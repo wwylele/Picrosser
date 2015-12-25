@@ -56,11 +56,13 @@ click 'Submit Picross' and 'Solve this', you will get message box indicating tha
 this is a hard puzzle that the program cannot solve in the simple way, 
 and ask if try to search all solutions. This is often caused by a puzzle with multiple solutions (but not for this example, which truly has a unique solution). 
 
-Now click 'Yes', then the program will begin searching (currently the algorithm is implemented as a stupid DFS, and it may take several minutes or more to search). Then each time the program find a solution, it will show the solution and ask if to continue. The searching will stop when choosing not to continue, or it has searched all possibility. 
+Now click 'Yes', then the program will begin searching (currently the algorithm is implemented as a stupid DFS, and it may take several seconds or minutes to search). Then each time the program find a solution, it will show the solution and ask if to continue. The searching will stop when choosing not to continue, or it has searched all possibility. 
 
 As for this example, the program will find its unique solution:
 
 ![ScreenShotExample2Result](Examples/example2_result.png)
+
+On my computer, it takes around 20s to find solutions of this example.
 
 ## Usage (console version)
 Input a file
