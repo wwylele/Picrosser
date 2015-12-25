@@ -221,10 +221,10 @@ namespace PicrosserUI {
         }
 
         private void SearchingWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-            PixelStateEnum[,] pixelStates = e.UserState as PixelStateEnum[,];
+            bool[,] pixelStates = e.UserState as bool[,];
             for(int x = 0; x < question.Width; ++x) {
                 for(int y = 0; y < question.Height; ++y) {
-                    pixels[x, y].Fill = pixelStates[x, y] == PixelStateEnum.ON ?
+                    pixels[x, y].Fill = pixelStates[x, y] ?
                         brushOn : brushOff;
                 }
             }

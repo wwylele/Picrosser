@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Picrosser
-{
-    class MyBitArray
-    {
+namespace Picrosser {
+    class MyBitArray {
         ulong[] bits;
         public MyBitArray(int size) {
 
@@ -35,7 +33,7 @@ namespace Picrosser
             }
         }
         public bool Test(int pos) {
-            return (bits[pos / 64] & (1UL << (pos % 64)))!=0;
+            return (bits[pos / 64] & (1UL << (pos % 64))) != 0;
         }
         public bool AndIsZero(MyBitArray other) {
             for(int i = 0; i < bits.Length; ++i) {

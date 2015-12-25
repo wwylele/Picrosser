@@ -43,7 +43,7 @@ namespace PicrosserConsole {
 
             bool found = false;
             foreach(var ps in Solver.SolveBySearching(question)) {
-                if(!question.VerifySolution(Solver.ConverToPureSolution(ps))) {
+                if(!question.VerifySolution(ps)) {
                     Console.WriteLine("Sorry I made a mistake.");
                     break;
                 }
@@ -51,17 +51,7 @@ namespace PicrosserConsole {
                 Console.WriteLine("=======================");
                 for(int y = 0; y < question.Height; ++y) {
                     for(int x = 0; x < question.Width; ++x) {
-                        switch(ps[x, y]) {
-                        case PixelStateEnum.UNKNOWN:
-                            Console.Write(" ?");
-                            break;
-                        case PixelStateEnum.ON:
-                            Console.Write(" *");
-                            break;
-                        case PixelStateEnum.OFF:
-                            Console.Write("  ");
-                            break;
-                        }
+                        Console.Write(ps[x, y] ? " *" : "  ");
                     }
                     Console.WriteLine("");
                 }

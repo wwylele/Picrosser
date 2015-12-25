@@ -78,10 +78,10 @@ namespace Picrosser {
         /// </summary>
         /// <param name="pixels">The <c>PixelStateEnum[,]</c> to convert</param>
         /// <returns>Convertion result</returns>
-        public static bool[,] ConverToPureSolution(PixelStateEnum[,] pixels) {
+        public static bool[,] ConvertToPureSolution(PixelStateEnum[,] pixels) {
             bool[,] ret = new bool[pixels.GetLength(0), pixels.GetLength(1)];
-            for(int x=0;x< pixels.GetLength(0); ++x) {
-                for(int y=0;y< pixels.GetLength(0); ++y) {
+            for(int x = 0; x < pixels.GetLength(0); ++x) {
+                for(int y = 0; y < pixels.GetLength(0); ++y) {
                     switch(pixels[x, y]) {
                     case PixelStateEnum.ON:
                         ret[x, y] = true;
@@ -131,7 +131,7 @@ namespace Picrosser {
         }
         delegate void GetSliceDel(int rowIndex, out MyBitArray on, out MyBitArray off);
 
-        
+
 
         /// <summary>
         /// An enum that descibes the solving state of the <c>Solver</c>
@@ -237,7 +237,7 @@ namespace Picrosser {
             return result;
         }
 
-        
+
 
         //These are used for SolveBySearching to hack in SoveByStep
         //to reuse candidates sets.
@@ -467,7 +467,7 @@ namespace Picrosser {
         /// </summary>
         /// <param name="question">The puzzle to be solved.</param>
         /// <returns>An IEnumerable of each solutions.</returns>
-        public static IEnumerable<PixelStateEnum[,]> SolveBySearching(Question question) {
+        public static IEnumerable<bool[,]> SolveBySearching(Question question) {
             var works = new LinkedList<PixelStateEnum[,]>();
             var candidatesList = new LinkedList<LinkedList<MyBitArray>[][]>();
             works.AddFirst(new PixelStateEnum[question.Width, question.Height]);
@@ -481,7 +481,7 @@ namespace Picrosser {
                 candidatesList.RemoveFirst();
                 switch(solver.Solve(question)) {
                 case ResultEnum.FINISHED:
-                    yield return solver.pixelStates;
+                    yield return ConvertToPureSolution(solver.pixelStates);
                     break;
                 case ResultEnum.INDEFINITE:
                     PixelStateEnum[,] a, b;

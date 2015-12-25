@@ -12,7 +12,7 @@ namespace PicrosserTest {
             int count = 0;
             foreach(var s in Solver.SolveBySearching(question)) {
                 ++count;
-                Assert.IsTrue(question.VerifySolution(Solver.ConverToPureSolution(s)));
+                Assert.IsTrue(question.VerifySolution(s));
             }
             Assert.AreEqual(count, 2);
 
