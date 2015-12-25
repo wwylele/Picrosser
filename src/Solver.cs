@@ -81,7 +81,7 @@ namespace Picrosser {
         public static bool[,] ConvertToPureSolution(PixelStateEnum[,] pixels) {
             bool[,] ret = new bool[pixels.GetLength(0), pixels.GetLength(1)];
             for(int x = 0; x < pixels.GetLength(0); ++x) {
-                for(int y = 0; y < pixels.GetLength(0); ++y) {
+                for(int y = 0; y < pixels.GetLength(1); ++y) {
                     switch(pixels[x, y]) {
                     case PixelStateEnum.ON:
                         ret[x, y] = true;
