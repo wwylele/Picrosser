@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Picrosser;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 namespace PicrosserTest {
     [TestClass]
     public class SolverTest {
@@ -14,7 +15,27 @@ namespace PicrosserTest {
                 ++count;
                 Assert.IsTrue(question.VerifySolution(s));
             }
-            Assert.AreEqual(count, 2);
+            Assert.AreEqual(2, count);
+
+        }
+
+        [TestMethod]
+        public void TestSolveSimple() {
+            string text = "", line;
+            int sec = 0;
+            StreamReader file = new StreamReader("..\\..\\..\\Examples\\example1.txt");
+            while(sec < 2) {
+                line = file.ReadLine();
+                if(line == null) line = "";
+                text += line + "\n";
+                if(line.Equals("")) ++sec;
+            }
+            file.Close();
+
+            Question question = new Question(text);
+            Solver solver = new Solver();
+            Assert.AreEqual(Solver.ResultEnum.FINISHED, solver.Solve(question));
+            Assert.IsTrue(question.VerifySolution(Solver.ConvertToPureSolution(solver.pixelStates)));
 
         }
     }
