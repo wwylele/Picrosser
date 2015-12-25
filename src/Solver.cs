@@ -76,9 +76,10 @@ namespace Picrosser {
 
         
         void GetColSlice(int colIndex, out MyBitArray on, out MyBitArray off) {
-            on = new MyBitArray(pixelStates.GetLength(1));
-            off = new MyBitArray(pixelStates.GetLength(1));
-            for(int i = 0; i < pixelStates.GetLength(1); ++i) {
+            int size = pixelStates.GetLength(1);
+            on = new MyBitArray(size);
+            off = new MyBitArray(size);
+            for(int i = 0; i < size; ++i) {
                 switch(pixelStates[colIndex, i]) {
                 case PixelStateEnum.ON:
                     on.Set(i);
@@ -90,9 +91,10 @@ namespace Picrosser {
             }
         }
         void GetRowSlice(int rowIndex, out MyBitArray on, out MyBitArray off) {
-            on = new MyBitArray(pixelStates.GetLength(0));
-            off = new MyBitArray(pixelStates.GetLength(0));
-            for(int i = 0; i < pixelStates.GetLength(0); ++i) {
+            int size = pixelStates.GetLength(0);
+            on = new MyBitArray(size);
+            off = new MyBitArray(size);
+            for(int i = 0; i < size; ++i) {
                 switch(pixelStates[i, rowIndex]) {
                 case PixelStateEnum.ON:
                     on.Set(i);
@@ -211,17 +213,7 @@ namespace Picrosser {
             return result;
         }
 
-        /*//Helper functions for BitArray
-        static bool IsZero(BitArray b) {
-            foreach(bool k in b) if(k) return false;
-            return true;
-        }
-        static BitArray And(BitArray a, BitArray b) {
-            return ((BitArray)a.Clone()).And(b);
-        }
-        static BitArray Not(BitArray a) {
-            return ((BitArray)a.Clone()).Not();
-        }*/
+        
 
         //These are used for SolveBySearching to hack in SoveByStep
         //to reuse candidates sets.
