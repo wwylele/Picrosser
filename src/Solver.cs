@@ -73,8 +73,32 @@ namespace Picrosser {
         /// </summary>
         public PixelStateEnum[,] pixelStates;
 
+        /// <summary>
+        /// Convert a <c>PixelStateEnum[,]</c> to <c>bool[,]</c>
+        /// </summary>
+        /// <param name="pixels">The <c>PixelStateEnum[,]</c> to convert</param>
+        /// <returns>Convertion result</returns>
+        public static bool[,] ConverToPureSolution(PixelStateEnum[,] pixels) {
+            bool[,] ret = new bool[pixels.GetLength(0), pixels.GetLength(1)];
+            for(int x=0;x< pixels.GetLength(0); ++x) {
+                for(int y=0;y< pixels.GetLength(0); ++y) {
+                    switch(pixels[x, y]) {
+                    case PixelStateEnum.ON:
+                        ret[x, y] = true;
+                        break;
+                    case PixelStateEnum.OFF:
+                        ret[x, y] = false;
+                        break;
+                    default:
+                        throw new ArgumentException();
+                    }
+                }
+            }
+            return ret;
+        }
 
-        
+
+
         void GetColSlice(int colIndex, out MyBitArray on, out MyBitArray off) {
             int size = pixelStates.GetLength(1);
             on = new MyBitArray(size);

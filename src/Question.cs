@@ -195,6 +195,55 @@ namespace Picrosser {
             }
         }
 
+        /// <summary>
+        /// Verify a solution for this question
+        /// </summary>
+        /// <param name="pixels"></param>
+        /// <returns>whether it is a solution for this question or not</returns>
+        public bool VerifySolution(bool[,] pixels) {
+            if(pixels.GetLength(0) != Width || pixels.GetLength(1) != Height) return false;
+            for(int i = 0; i < Width; ++i) {
+                var numbers = new LinkedList<int>();
+                int cur = 0;
+                for(int j = 0; j < Height; ++j) {
+                    if(!pixels[i, j] && cur != 0) {
+                        numbers.AddLast(cur);
+                        cur = 0;
+                    } else if(pixels[i, j]) {
+                        ++cur;
+                    }
+                }
+                if(cur != 0) numbers.AddLast(cur);
 
+                var numbersA = numbers.ToArray();
+                if(numbersA.Length != colNumbers[i].Length) return false;
+                for(int j = 0; j < numbersA.Length; ++j) {
+                    if(numbersA[j] != colNumbers[i][j]) return false;
+                }
+            }
+
+            for(int i = 0; i < Height; ++i) {
+                var numbers = new LinkedList<int>();
+                int cur = 0;
+                for(int j = 0; j < Width; ++j) {
+                    if(!pixels[j, i] && cur != 0) {
+                        numbers.AddLast(cur);
+                        cur = 0;
+                    } else if(pixels[j, i]) {
+                        ++cur;
+                    }
+                }
+                if(cur != 0) numbers.AddLast(cur);
+
+                var numbersA = numbers.ToArray();
+                if(numbersA.Length != rowNumbers[i].Length) return false;
+                for(int j = 0; j < numbersA.Length; ++j) {
+                    if(numbersA[j] != rowNumbers[i][j]) return false;
+                }
+            }
+
+            return true;
+
+        }
     }
 }

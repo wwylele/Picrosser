@@ -43,6 +43,10 @@ namespace PicrosserConsole {
 
             bool found = false;
             foreach(var ps in Solver.SolveBySearching(question)) {
+                if(!question.VerifySolution(Solver.ConverToPureSolution(ps))) {
+                    Console.WriteLine("Sorry I made a mistake.");
+                    break;
+                }
                 found = true;
                 Console.WriteLine("=======================");
                 for(int y = 0; y < question.Height; ++y) {
