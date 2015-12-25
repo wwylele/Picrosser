@@ -292,6 +292,8 @@ namespace Picrosser {
         /// </example>
         public IEnumerable<object> SolveByStep(Question question) {
             Result = ResultEnum.SOLVING;
+
+            //If no pixelStates are set, initialize an empty one
             if(pixelStates == null)
                 pixelStates = new PixelStateEnum[question.Width, question.Height];
             if(pixelStates.GetLength(0) != question.Width ||
@@ -306,22 +308,36 @@ namespace Picrosser {
 
             int width = question.Width;
             int height = question.Height;
-            int hw;
+            int hw;//a temp var for swap width and height
             var GetSlice = new GetSliceDel[] {
                 GetColSlice,GetRowSlice
             };
             while(true) {
-                bool worked = false;
+                bool worked = false;//will be set to true if we make some progress
+
+                //for each iterations, we have two rounds.
+                //In the first round, work on each columns,
+                //then flip the question over along the diagonal,
+                //and do the second round work on each columns again 
+                //(i.e. each rows of the original question)
+                //then flip back.
 
                 for(int flip = 0; flip < 2; ++flip, hw = width, width = height, height = hw) {
                     for(int index = 0; index < width; ++index) {
+
+                        //report current column/row
                         yield return new StepMove {
                             moveToCol = flip == 0,
                             index = index
                         };
+
+                        //Get the bit slice of current column
+                        //onSlice indicates if it has been turned on for each pixel
+                        //offSlice indicates if it has been turned off for each pixel
                         MyBitArray onSlice, offSlice;
                         GetSlice[flip](index, out onSlice, out offSlice);
 
+                        //Filter out all the candidates that do not match the slice
                         var node = candidates[flip][index].First;
                         while(node != null) {
                             var next = node.Next;
@@ -332,17 +348,24 @@ namespace Picrosser {
                         }
 
                         if(!candidates[flip][index].Any()) {
+                            //If all candidates has been filter out
+                            //there is contradiction
                             Result = ResultEnum.CONTRADICTORY;
                             ContradictoryInCols = flip == 0;
                             ContradictoryIndex = index;
                             yield break;
                         }
+
+                        //Find which pixels can be turned on or off in this round
                         onSlice.Not();
                         offSlice.Not();
                         foreach(MyBitArray bits in candidates[flip][index]) {
                             onSlice.And(bits);
                             offSlice.AndNot(bits);
                         }
+                        //Now onSlice contain all pixels to be turned on
+                        //and offSlice contain all pixels to be turned off
+                        //Do the turning work and report
                         for(int i = 0; i < height; ++i) {
                             int x, y;
                             if(flip == 0) {
@@ -374,20 +397,24 @@ namespace Picrosser {
                     }
                 }
 
-
+                //If no progress has been made in this interation,
+                //we cannot do anything more, and break the interation
                 if(worked == false) break;
 
             }
 
+            //Did we solve the whole puzzle?
             for(int ci = 0; ci < question.Width; ++ci)
                 for(int ri = 0; ri < question.Height; ++ri) {
                     if(pixelStates[ci, ri] == PixelStateEnum.UNKNOWN) {
+                        //No, there are still some unknown pixels.
                         FirstUnknownColIndex = ci;
                         FirstUnknownRowIndex = ri;
                         Result = ResultEnum.INDEFINITE;
                         goto tag_indefinite;
                     }
                 }
+            //Yes, we solved it!
             Result = ResultEnum.FINISHED;
             tag_indefinite:
 
