@@ -226,14 +226,14 @@ namespace Picrosser {
         //These are used for SolveBySearching to hack in SoveByStep
         //to reuse candidates sets.
         private bool usePresetCandidates = false;
-        private IEnumerable<MyBitArray>
+        private LinkedList<MyBitArray>
             [/* 0:cols,1:rows */]
             [/* col/row index */] candidates;
         //Create a inital candidates set from the question
-        private static IEnumerable<MyBitArray>[][] GetInitCandidatesSet(Question question) {
-            var candidates = new IEnumerable<MyBitArray>[2][]{
-                    new IEnumerable<MyBitArray>[question.Width],
-                    new IEnumerable<MyBitArray>[question.Height]
+        private static LinkedList<MyBitArray>[][] GetInitCandidatesSet(Question question) {
+            var candidates = new LinkedList<MyBitArray>[2][]{
+                    new LinkedList<MyBitArray>[question.Width],
+                    new LinkedList<MyBitArray>[question.Height]
                 };
             for(int coli = 0; coli < question.Width; ++coli) {
                 candidates[0][coli] = GetAllCandidates(question.GetColNumbers(coli), question.Height);
@@ -248,16 +248,18 @@ namespace Picrosser {
         // - clone column array and rows array,
         // - clone the IEnumerable for each column/row,
         // - but not clone each BitArray, since we use it as immutable
-        private static IEnumerable<MyBitArray>[][] CloneCandidatesSet(IEnumerable<MyBitArray>[][] c) {
-            var candidates = new IEnumerable<MyBitArray>[2][]{
-                    new IEnumerable<MyBitArray>[c[0].Length],
-                    new IEnumerable<MyBitArray>[c[1].Length]
+        private static LinkedList<MyBitArray>[][] CloneCandidatesSet(LinkedList<MyBitArray>[][] c) {
+            var candidates = new LinkedList<MyBitArray>[2][]{
+                    new LinkedList<MyBitArray>[c[0].Length],
+                    new LinkedList<MyBitArray>[c[1].Length]
                 };
             for(int i = 0; i < c[0].Length; ++i) {
-                candidates[0][i] = c[0][i].ToList();
+                candidates[0][i] = new LinkedList<MyBitArray>();
+                foreach(var b in c[0][i]) candidates[0][i].AddLast(b);
             }
             for(int i = 0; i < c[1].Length; ++i) {
-                candidates[1][i] = c[1][i].ToList();
+                candidates[1][i] = new LinkedList<MyBitArray>();
+                foreach(var b in c[1][i]) candidates[1][i].AddLast(b);
             }
             return candidates;
         }
@@ -328,10 +330,15 @@ namespace Picrosser {
                         MyBitArray onSlice, offSlice;
                         GetSlice[flip](index, out onSlice, out offSlice);
 
-                        candidates[flip][index] = (from k in candidates[flip][index]
-                                                   where k.AndIsZero(offSlice) &&
-                                                           k.NotAndIsZero(onSlice)
-                                                   select k).ToList();
+                        var node = candidates[flip][index].First;
+                        while(node != null) {
+                            var next = node.Next;
+                            if(!node.Value.AndIsZero(offSlice) || !node.Value.NotAndIsZero(onSlice)) {
+                                candidates[flip][index].Remove(node);
+                            }
+                            node = next;
+                        }
+
                         if(!candidates[flip][index].Any()) {
                             Result = ResultEnum.CONTRADICTORY;
                             ContradictoryInCols = flip == 0;
@@ -419,7 +426,7 @@ namespace Picrosser {
         /// <returns>An IEnumerable of each solutions.</returns>
         public static IEnumerable<PixelStateEnum[,]> SolveBySearching(Question question) {
             var works = new LinkedList<PixelStateEnum[,]>();
-            var candidatesList = new LinkedList<IEnumerable<MyBitArray>[][]>();
+            var candidatesList = new LinkedList<LinkedList<MyBitArray>[][]>();
             works.AddFirst(new PixelStateEnum[question.Width, question.Height]);
             candidatesList.AddFirst(GetInitCandidatesSet(question));
             Solver solver = new Solver();
@@ -437,7 +444,7 @@ namespace Picrosser {
                     PixelStateEnum[,] a, b;
                     a = solver.pixelStates;
                     b = (PixelStateEnum[,])a.Clone();
-                    IEnumerable<MyBitArray>[][] cloneCan;
+                    LinkedList<MyBitArray>[][] cloneCan;
                     cloneCan = CloneCandidatesSet(solver.candidates);
                     a[solver.FirstUnknownColIndex, solver.FirstUnknownRowIndex]
                         = PixelStateEnum.OFF;
