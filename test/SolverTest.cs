@@ -9,7 +9,7 @@ namespace PicrosserTest {
     public class SolverTest {
         [TestMethod]
         public void TestSolveBySearching() {
-            Question question = new Question("1 1\n1 1\n1 1\n1 1\n\n1 1\n1 1\n1 1\n1 1");
+            Question question = new Question("1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n\n1 1 1\n1 1 1\n1 1 1\n1 1 1");
             int count = 0;
             foreach(var s in Solver.SolveBySearching(question)) {
                 ++count;
