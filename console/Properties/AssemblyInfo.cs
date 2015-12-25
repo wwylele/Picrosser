@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 
 
 [assembly: AssemblyTitle("PicrosserConsole")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Picross solver console")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("wwylele")]
 [assembly: AssemblyProduct("PicrosserConsole")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright ©  2015 wwylele")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

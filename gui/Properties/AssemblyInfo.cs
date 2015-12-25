@@ -6,11 +6,11 @@ using System.Windows;
 
 
 [assembly: AssemblyTitle("Picrosser")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Picross solver")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("wwylele")]
 [assembly: AssemblyProduct("Picrosser")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright ©  2015 wwylele")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

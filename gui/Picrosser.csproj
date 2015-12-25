@@ -7,7 +7,7 @@
     <ProjectGuid>{CAF913E8-DBFF-4603-88B0-347DDFAD4068}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Picrosser</RootNamespace>
+    <RootNamespace>PicrosserUI</RootNamespace>
     <AssemblyName>Picrosser</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
