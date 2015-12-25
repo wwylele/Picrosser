@@ -62,7 +62,7 @@ As for this example, the program will find its unique solution:
 
 ![ScreenShotExample2Result](Examples/example2_result.png)
 
-On my computer, it takes around 20s to find solutions of this example.
+On my computer, it takes around 8s to find solutions of this example.
 
 ## Usage (console version)
 Input a file
